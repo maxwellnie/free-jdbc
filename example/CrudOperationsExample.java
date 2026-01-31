@@ -77,11 +77,11 @@ public class CrudOperationsExample {
                 .build();
         
         try (PreparedIntegratedStatement stmt = new PreparedIntegratedStatement(connection)) {
-            boolean result = stmt.createStatement(singleSql.getSqlString())
+            int result = stmt.createStatement(singleSql.getSqlString())
                     .parameterize(SingleSql.SINGLE_SQL_PARAMETERS_HANDLER, singleSql)
-                    .execute(Executor.PREPARED_STATEMENT_EXECUTE_EXECUTOR);
+                    .execute(Executor.PREPARED_STATEMENT_UPDATE_EXECUTOR);
             
-            System.out.println("Data inserted successfully: " + result);
+            System.out.println("Data inserted successfully: " + (result >0));
         }
     }
 
