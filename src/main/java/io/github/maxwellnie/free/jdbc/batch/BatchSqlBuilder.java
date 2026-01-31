@@ -12,71 +12,23 @@ import java.util.List;
  * @author Maxwell Nie
  */
 public class BatchSqlBuilder extends AbstractSqlBuilder<BatchSql, List<Object>> {
-    protected final int batchParametersSize;
+    public BatchSqlBuilder() {
+    }
+
+    public BatchSqlBuilder(StringBuilder sqlStringBuilder) {
+        super(sqlStringBuilder);
+    }
 
     /**
-     * @param batchSize batch size
+     * Appends a single SQL statement to the batch.
+     * NOTE: Ensure that multiple SQL statements are separated by semicolons (;) when appending multiple statements.
+     *
+     * @param sql The SQL statement to append
+     * @return This BatchSqlBuilder instance for method chaining
      */
-    public BatchSqlBuilder(int batchSize) {
-        super(batchSize);
-        this.batchParametersSize = 0;
-    }
-
-    public BatchSqlBuilder() {
-        this(0);
-    }
-
-    public BatchSqlBuilder(int batchSize, int batchParametersSize) {
-        super(batchSize);
-        this.batchParametersSize = batchParametersSize;
-    }
-
-    @Override
-    public BatchSqlBuilder appendSql(String sql) {
-        super.appendSql(sql);
+    public BatchSqlBuilder appendSingleSql(String sql) {
+        sqlStringBuilder.append(sql);
         return this;
-    }
-
-    public BatchSqlBuilder appendBatchSqlParameters(Collection<Object> parameters) {
-        checkParameters();
-        if (parameters == null)
-            return this;
-        if (parameters.size() != batchParametersSize)
-            throw new SqlBuildException("Parameter count mismatch: expected " + batchParametersSize + " parameters, but got " + parameters.size() + " parameters.");
-        List<Object> batchParameters = newBatchParameters();
-        batchParameters.addAll(parameters);
-        sqlParameters.add(batchParameters);
-        return this;
-    }
-
-    public BatchSqlBuilder appendBatchSqlParameters(Object... parameters) {
-        if (parameters == null)
-            return this;
-        if (parameters.length != batchParametersSize)
-            throw new SqlBuildException("Parameter count mismatch: expected " + batchParametersSize + " parameters, but got " + parameters.length + " parameters.");
-        List<Object> batchParameters = newBatchParameters();
-        for (Object parameter : parameters) batchParameters.add(parameter);
-        sqlParameters.add(batchParameters);
-        return this;
-    }
-
-    public BatchSqlBuilder appendBatchSqlFragment(String sqlFragment, Collection<Object> parameters) {
-        appendBatchSqlParameters(parameters);
-        sqlStringBuilder.append(sqlFragment);
-        return this;
-    }
-
-    public BatchSqlBuilder appendBatchSqlFragment(String sqlFragment, Object... parameters) {
-        appendBatchSqlParameters(parameters);
-        sqlStringBuilder.append(sqlFragment);
-        return this;
-    }
-
-    protected List<Object> newBatchParameters() {
-        if (batchParametersSize > 0)
-            return new ArrayList<>(batchParametersSize);
-        else
-            throw new SqlBuildException("You are trying to create parameters list to a non-prepared statement.");
     }
 
     @Override
