@@ -46,32 +46,32 @@ stmt.setConfiguration(config);
 
 ### 1. SQL 构建器
 
-- [SingleSqlBuilder](https://github.com/maxwellnie/free-jdbc/main/src/main/java/io/github/maxwellnie/free/jdbc/single/SingleSqlBuilder.java)：用于构建单条带参数的 SQL 语句
-- [BatchSqlBuilder](https://github.com/maxwellnie/free-jdbc/main/src/main/java/io/github/maxwellnie/free/jdbc/batch/BatchSqlBuilder.java)：用于构建批量 SQL 语句
+- [SingleSqlBuilder](https://github.com/maxwellnie/free-jdbc/blob/master/src/main/java/io/github/maxwellnie/free/jdbc/single/SingleSqlBuilder.java)：用于构建单条带参数的 SQL 语句
+- [BatchSqlBuilder](https://github.com/maxwellnie/free-jdbc/blob/master/src/main/java/io/github/maxwellnie/free/jdbc/batch/BatchSqlBuilder.java)：用于构建批量 SQL 语句
 
 ### 2. 语句处理器
 
-- [PreparedIntegratedStatement](https://github.com/maxwellnie/free-jdbc/main/src/main/java/io/github/maxwellnie/free/jdbc/statement/PreparedIntegratedStatement.java)：预编译语句处理
-- [SimpleIntegratedStatement](https://github.com/maxwellnie/free-jdbc/main/src/main/java/io/github/maxwellnie/free/jdbc/statement/SimpleIntegratedStatement.java)：简单语句处理
-- [CallableIntegrateStatement](https://github.com/maxwellnie/free-jdbc/main/src/main/java/io/github/maxwellnie/free/jdbc/statement/CallableIntegrateStatement.java)：存储过程调用
+- [PreparedIntegratedStatement](https://github.com/maxwellnie/free-jdbc/blob/master/src/main/java/io/github/maxwellnie/free/jdbc/statement/PreparedIntegratedStatement.java)：预编译语句处理
+- [SimpleIntegratedStatement](https://github.com/maxwellnie/free-jdbc/blob/master/src/main/java/io/github/maxwellnie/free/jdbc/statement/SimpleIntegratedStatement.java)：简单语句处理
+- [CallableIntegrateStatement](https://github.com/maxwellnie/free-jdbc/blob/master/src/main/java/io/github/maxwellnie/free/jdbc/statement/CallableIntegrateStatement.java)：存储过程调用
 
 ### 3. 配置管理
 
-- [Configuration](https://github.com/maxwellnie/free-jdbc/main/src/main/java/io/github/maxwellnie/free/jdbc/statement/Configuration.java)：定义语句执行配置
-- [ConfigurationImpl](https://github.com/maxwellnie/free-jdbc/main/src/main/java/io/github/maxwellnie/free/jdbc/statement/ConfigurationImpl.java)：配置实现类
+- [Configuration](https://github.com/maxwellnie/free-jdbc/blob/master/src/main/java/io/github/maxwellnie/free/jdbc/statement/Configuration.java)：定义语句执行配置
+- [ConfigurationImpl](https://github.com/maxwellnie/free-jdbc/blob/master/src/main/java/io/github/maxwellnie/free/jdbc/statement/ConfigurationImpl.java)：配置实现类
 
 ### 4. 结果处理
 
-- [ResultParser](https://github.com/maxwellnie/free-jdbc/main/src/main/java/io/github/maxwellnie/free/jdbc/statement/ResultParser.java)：结果集解析接口
-- [Executor](https://github.com/maxwellnie/free-jdbc/main/src/main/java/io/github/maxwellnie/free/jdbc/statement/Executor.java)：执行器接口
+- [ResultParser](https://github.com/maxwellnie/free-jdbc/blob/master/src/main/java/io/github/maxwellnie/free/jdbc/statement/ResultParser.java)：结果集解析接口
+- [Executor](https://github.com/maxwellnie/free-jdbc/blob/master/src/main/java/io/github/maxwellnie/free/jdbc/statement/Executor.java)：执行器接口
 
 ## 示例代码
 
-更多详细的使用示例可以在 [src/test/java/io/github/maxwellnie/free/jdbc/examples](https://github.com/maxwellnie/free-jdbc/tree/main/src/test/java/io/github/maxwellnie/free/jdbc/examples) 目录中找到：
+更多详细的使用示例可以在 [example](https://github.com/maxwellnie/free-jdbc/blob/master/example) 目录中找到：
 
-- [CrudOperationsExample.java](https://github.com/maxwellnie/free-jdbc/main/src/test/java/io/github/maxwellnie/free/jdbc/examples/CrudOperationsExample.java)：基本CRUD操作示例
-- [BatchOperationExample.java](https://github.com/maxwellnie/free-jdbc/main/src/test/java/io/github/maxwellnie/free/jdbc/examples/BatchOperationExample.java)：批量操作示例
-- [StoredProcedureExample.java](https://github.com/maxwellnie/free-jdbc/main/src/test/java/io/github/maxwellnie/free/jdbc/examples/StoredProcedureExample.java)：存储过程调用示例
+- [CrudOperationsExample.java](https://github.com/maxwellnie/free-jdbc/blob/master/example/CrudOperationsExample.java)：基本CRUD操作示例
+- [BatchOperationExample.java](https://github.com/maxwellnie/free-jdbc/blob/master/example/BatchOperationExample.java)：批量操作示例
+- [StoredProcedureExample.java](https://github.com/maxwellnie/free-jdbc/blob/master/example/StoredProcedureExample.java)：存储过程调用示例
 
 示例展示了：
 - **基本 CRUD 操作**：如何执行创建、读取、更新和删除操作
@@ -93,10 +93,10 @@ Free-JDBC 的设计理念是提供一个简单而强大的 JDBC 抽象层，让�
 
 框架提供了一系列特定的异常类型：
 
-- [SqlBuildException](https://github.com/maxwellnie/free-jdbc/main/src/main/java/io/github/maxwellnie/free/jdbc/SqlBuildException.java)：SQL 构建时发生错误
-- [StatementException](https://github.com/maxwellnie/free-jdbc/main/src/main/java/io/github/maxwellnie/free/jdbc/statement/StatementException.java)：语句处理时发生错误
-- [SqlExecutionException](https://github.com/maxwellnie/free-jdbc/main/src/main/java/io/github/maxwellnie/free/jdbc/statement/SqlExecutionException.java)：SQL 执行时发生错误
-- [ResultParserException](https://github.com/maxwellnie/free-jdbc/main/src/main/java/io/github/maxwellnie/free/jdbc/statement/ResultParserException.java)：结果解析时发生错误
+- [SqlBuildException](https://github.com/maxwellnie/free-jdbc/blob/master/src/main/java/io/github/maxwellnie/free/jdbc/SqlBuildException.java)：SQL 构建时发生错误
+- [StatementException](https://github.com/maxwellnie/free-jdbc/blob/master/src/main/java/io/github/maxwellnie/free/jdbc/statement/StatementException.java)：语句处理时发生错误
+- [SqlExecutionException](https://github.com/maxwellnie/free-jdbc/blob/master/src/main/java/io/github/maxwellnie/free/jdbc/statement/SqlExecutionException.java)：SQL 执行时发生错误
+- [ResultParserException](https://github.com/maxwellnie/free-jdbc/blob/master/src/main/java/io/github/maxwellnie/free/jdbc/statement/ResultParserException.java)：结果解析时发生错误
 
 ## 贡献
 
