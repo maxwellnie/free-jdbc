@@ -21,7 +21,7 @@ Free-JDBC 是一个轻量级的 Java JDBC 框架，旨在通过流畅的 API 简
 <dependency>
     <groupId>io.github.maxwellnie</groupId>
     <artifactId>free-jdbc</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
 </dependency>
 ```
 
