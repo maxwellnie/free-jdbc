@@ -1,4 +1,3 @@
-package io.github.maxwellnie.free.jdbc.examples;
 
 import io.github.maxwellnie.free.jdbc.single.SingleSqlBuilder;
 import io.github.maxwellnie.free.jdbc.statement.*;

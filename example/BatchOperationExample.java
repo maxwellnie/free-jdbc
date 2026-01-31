@@ -1,6 +1,7 @@
-package io.github.maxwellnie.free.jdbc.examples;
+
 
 import io.github.maxwellnie.free.jdbc.batch.BatchSqlBuilder;
+import io.github.maxwellnie.free.jdbc.batch.BoundBatchSqlBuilder;
 import io.github.maxwellnie.free.jdbc.statement.ConfigurationImpl;
 import io.github.maxwellnie.free.jdbc.statement.Executor;
 import io.github.maxwellnie.free.jdbc.statement.PreparedIntegratedStatement;
@@ -13,7 +14,6 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
-import static io.github.maxwellnie.free.jdbc.examples.CrudOperationsExample.createTable;
 
 /**
  * Batch Operation Example
@@ -26,7 +26,7 @@ public class BatchOperationExample {
         String password = "";
 
         try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            createTable(connection);
+            CrudOperationsExample.createTable(connection);
             // Example 1: Batch insert data
             batchInsertExample(connection);
             
@@ -45,8 +45,8 @@ public class BatchOperationExample {
         System.out.println("=== Batch Insert Example ===");
         
         // Create batch SQL - insert user data
-        BatchSqlBuilder batchSqlBuilder = new BatchSqlBuilder(3, 3); // Each row has 3 parameters (id, name, email)
-        batchSqlBuilder.appendSql("INSERT INTO users(id, name, email) VALUES(?, ?, ?)")
+        BoundBatchSqlBuilder batchSqlBuilder = new BoundBatchSqlBuilder(3); // Each row has 3 parameters (id, name, email)
+        batchSqlBuilder.appendSingleSql("INSERT INTO users(id, name, email) VALUES(?, ?, ?)")
                 .appendBatchSqlParameters(Arrays.asList(1, "Zhang San", "zhangsan@example.com"))
                 .appendBatchSqlParameters(Arrays.asList(2, "Li Si", "lisi@example.com"))
                 .appendBatchSqlParameters(Arrays.asList(3, "Wang Wu", "wangwu@example.com"));
@@ -75,8 +75,8 @@ public class BatchOperationExample {
         System.out.println("\n=== Batch Update Example ===");
         
         // Create batch SQL - update user data
-        BatchSqlBuilder batchSqlBuilder = new BatchSqlBuilder(2, 2); // Each row has 2 parameters (new_email, user_id)
-        batchSqlBuilder.appendSql("UPDATE users SET email = ? WHERE id = ?")
+        BoundBatchSqlBuilder batchSqlBuilder = new BoundBatchSqlBuilder(2); // Each row has 2 parameters (new_email, user_id)
+        batchSqlBuilder.appendSingleSql("UPDATE users SET email = ? WHERE id = ?")
                 .appendBatchSqlParameters(Arrays.asList("zhangsan_new@example.com", 1))
                 .appendBatchSqlParameters(Arrays.asList("lisi_new@example.com", 2));
         BatchSql batchSql = batchSqlBuilder.build();

@@ -1,5 +1,6 @@
-package io.github.maxwellnie.free.jdbc.examples;
 
+
+import io.github.maxwellnie.free.jdbc.single.BoundSingleSqlBuilder;
 import io.github.maxwellnie.free.jdbc.single.SingleSqlBuilder;
 import io.github.maxwellnie.free.jdbc.statement.*;
 import io.github.maxwellnie.free.jdbc.statement.SimpleIntegratedStatement;
@@ -65,7 +66,7 @@ public class CrudOperationsExample {
     public static void insertData(Connection connection) throws SQLException {
         System.out.println("\n=== Insert Data Example ===");
         
-        SingleSql singleSql = new SingleSqlBuilder(3)
+        SingleSql singleSql = new BoundSingleSqlBuilder(3)
                 .appendSql("INSERT INTO users(id, name, email) VALUES(")
                 .appendSqlParameter(1)
                 .appendSql("?, ")
@@ -90,7 +91,7 @@ public class CrudOperationsExample {
     public static void selectData(Connection connection) throws SQLException {
         System.out.println("\n=== Query Data Example ===");
         
-        SingleSql singleSql = new SingleSqlBuilder(1)
+        SingleSql singleSql = new BoundSingleSqlBuilder(1)
                 .appendSql("SELECT id, name, email FROM users WHERE id = ?")
                 .appendSqlParameter(1)
                 .build();
@@ -122,7 +123,7 @@ public class CrudOperationsExample {
     public static void updateData(Connection connection) throws SQLException {
         System.out.println("\n=== Update Data Example ===");
         
-        SingleSql singleSql = new SingleSqlBuilder(2)
+        SingleSql singleSql = new BoundSingleSqlBuilder(2)
                 .appendSql("UPDATE users SET email = ?")
                 .appendSqlParameter("zhangsan_updated@example.com")
                 .appendSql(" WHERE id = ?")
@@ -144,7 +145,7 @@ public class CrudOperationsExample {
     public static void deleteData(Connection connection) throws SQLException {
         System.out.println("\n=== Delete Data Example ===");
         
-        SingleSql singleSql = new SingleSqlBuilder(1)
+        SingleSql singleSql = new BoundSingleSqlBuilder(1)
                 .appendSql("DELETE FROM users WHERE id = ?")
                 .appendSqlParameter(1)
                 .build();
