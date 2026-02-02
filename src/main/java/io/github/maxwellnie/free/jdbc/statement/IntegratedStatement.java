@@ -65,9 +65,9 @@ public interface IntegratedStatement<T extends Statement, I extends IntegratedSt
      * @return Current integrated Statement instance, supporting method chaining
      * @throws StatementException If an error occurs during parameterization, typically due to invalid parameter types or indices
      */
-    <P> I parameterize(ParametersHandler<T, P> parametersHandler, P parameters) throws StatementException;
+    <P> I parameterize(ParametersHandler<? super T, P> parametersHandler, P parameters) throws StatementException;
 
-    default <R> R execute(Executor<T, R> executor) throws SqlExecutionException {
+    default <R> R execute(Executor<? super T, R> executor) throws SqlExecutionException {
         return execute(executor, null);
     }
 
@@ -93,7 +93,7 @@ public interface IntegratedStatement<T extends Statement, I extends IntegratedSt
      * @throws ResultParserException If an error occurs during result parsing, typically due to unexpected result types or structure
      * @throws SqlExecutionException If an error occurs during execution, typically due to SQL syntax errors or database constraints
      */
-    <P, R> R execute(Executor<T, P> executor, ResultParser<T, P, R> resultParser) throws SqlExecutionException, ResultParserException;
+    <P, R> R execute(Executor<? super T, P> executor, ResultParser<T, P, R> resultParser) throws SqlExecutionException, ResultParserException;
 
     default <P, R> R execute(ResultParser<T, P, R> resultParser) throws SqlExecutionException, ResultParserException {
         return execute(null, resultParser);

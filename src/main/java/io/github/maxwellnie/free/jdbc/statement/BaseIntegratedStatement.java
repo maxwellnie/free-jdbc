@@ -62,7 +62,7 @@ public abstract class BaseIntegratedStatement<T extends Statement, I extends Int
 
     @SuppressWarnings("unchecked")
     @Override
-    public <P, R> R execute(Executor<T, P> executor, ResultParser<T, P, R> resultParser) throws SqlExecutionException, ResultParserException {
+    public <P, R> R execute(Executor<? super T, P> executor, ResultParser<T, P, R> resultParser) throws SqlExecutionException, ResultParserException {
         validateStatement();
         if (executor == null) {
             if (resultParser == null)
@@ -91,7 +91,7 @@ public abstract class BaseIntegratedStatement<T extends Statement, I extends Int
     protected abstract boolean defaultExecute() throws SqlExecutionException;
 
     @Override
-    public <P> I parameterize(ParametersHandler<T, P> parametersHandler, P parameters) throws StatementException {
+    public <P> I parameterize(ParametersHandler<? super T, P> parametersHandler, P parameters) throws StatementException {
         validateStatement();
         if (parametersHandler != null) {
             try {

@@ -17,7 +17,7 @@ public interface Executor<T extends Statement, R> {
      * Statement batch execution executor
      * Used for batch processing of multiple SQL statements, returning int array result
      */
-    Executor<Statement, Boolean> STATEMENT_EXECUTOR = (statement, sql) -> statement.execute(sql);
+    Executor<Statement, Boolean> STATEMENT_EXECUTOR = Statement::execute;
 
     Executor<Statement, int[]> STATEMENT_BATCH_EXECUTOR = (statement, sqls) -> {
         IntegratedStatement.addBatchSql(statement, sqls);
@@ -47,6 +47,8 @@ public interface Executor<T extends Statement, R> {
     Executor<PreparedStatement, Boolean> PREPARED_STATEMENT_EXECUTE_EXECUTOR = (statement, sql) -> statement.execute();
 
     Executor<PreparedStatement, Integer> PREPARED_STATEMENT_UPDATE_EXECUTOR = (statement, sql) -> statement.executeUpdate();
+    Executor<Statement, Integer> STATEMENT_UPDATE_EXECUTOR = Statement::executeUpdate;
+    Executor<Statement, Boolean> STATEMENT_EXECUTE_EXECUTOR = Statement::execute;
 
     /**
      * Executes Statement and returns result

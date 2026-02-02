@@ -1,5 +1,6 @@
 
-import io.github.maxwellnie.free.jdbc.single.SingleSqlBuilder;
+import io.github.maxwellnie.free.jdbc.callable.CallableSql;
+import io.github.maxwellnie.free.jdbc.callable.CallableSqlBuilder;
 import io.github.maxwellnie.free.jdbc.statement.*;
 import io.github.maxwellnie.free.jdbc.statement.CallableIntegrateStatement;
 
@@ -24,9 +25,6 @@ public class StoredProcedureExample {
 
             // Example 2: Call stored procedure with return parameter
             callStoredProcedureWithReturnParam(connection);
-
-            // Example 3: Call simple stored procedure
-            callSimpleStoredProcedure(connection);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -56,88 +54,53 @@ public class StoredProcedureExample {
     }
 
     /**
-     * Call stored procedure with input/output parameters example
+     * Call stored procedure with return parameter using CallableSql
      */
-    public static void callStoredProcedureWithInOutParams(Connection connection) throws SQLException {
-        System.out.println("\n=== Call Stored Procedure With Input/Output Parameters Example ===");
+    public static void callStoredProcedureWithReturnParam(Connection connection) throws SQLException, SqlExecutionException, ResultParserException {
+        System.out.println("\n=== Call Stored Procedure With Return Parameter Using CallableSql ===");
 
-        String storedProcCall = "{ ? = CALL UPDATE_STRING(?) }";
+        // Create CallableSql using builder pattern
+        CallableSql callableSql = new CallableSqlBuilder("{ ? = CALL GET_USER_COUNT() }")
+                .appendOutParameter(Types.INTEGER) // Return parameter is OUT parameter
+                .build();
 
         try (CallableIntegrateStatement stmt = new CallableIntegrateStatement(connection)) {
-            String result = stmt.createStatement(storedProcCall)
-                .parameterize((callableStatement, params) -> {
-                    // Register return parameter
-                    callableStatement.registerOutParameter(1, Types.VARCHAR);
-                    // Set input parameter
-                    callableStatement.setString(2, "initial_value");
-                }, null)
-                .execute((ResultParser<CallableStatement, Object, String>) (callableStatement, params) -> {
-                    try {
-                        // Execute stored procedure
-                        callableStatement.execute();
-
-                        // Get output parameter value
-                        String outputValue = callableStatement.getString(1);
-                        System.out.println("Output parameter value: " + outputValue);
-
-                        return outputValue;
-                    } catch (SQLException e) {
-                        throw new ResultParserException(e);
-                    }
-                });
-        }
-    }
-
-    /**
-     * Call stored procedure with return parameter example
-     */
-    public static void callStoredProcedureWithReturnParam(Connection connection) throws SQLException {
-        System.out.println("\n=== Call Stored Procedure With Return Parameter Example ===");
-
-        String storedProcCall = "{ ? = CALL GET_USER_COUNT() }";
-
-        try (CallableIntegrateStatement stmt = new CallableIntegrateStatement(connection)) {
-            Integer userCount = stmt.createStatement(storedProcCall)
-                .parameterize((callableStatement, params) -> {
-                    // Register return parameter
-                    callableStatement.registerOutParameter(1, Types.INTEGER);
-                }, null)
-                .execute((ResultParser<CallableStatement, Object, Integer>) (callableStatement, params) -> {
-                    try {
-                        // Execute stored procedure
-                        callableStatement.execute();
-
-                        // Get return value
-                        return callableStatement.getInt(1);
-                    } catch (SQLException e) {
-                        throw new ResultParserException(e);
-                    }
-                });
+            Integer userCount = stmt.execute(callableSql, (callableStatement, result) -> {
+                try {
+                    // Get return value
+                    return callableStatement.getInt(1);
+                } catch (SQLException e) {
+                    throw new ResultParserException(e);
+                }
+            });
 
             System.out.println("User count: " + userCount);
         }
     }
 
     /**
-     * Call simple stored procedure example (no return value)
+     * Call stored procedure with input/output parameters using CallableSql
      */
-    public static void callSimpleStoredProcedure(Connection connection) throws SQLException {
-        System.out.println("\n=== Call Simple Stored Procedure Example ===");
+    public static void callStoredProcedureWithInOutParams(Connection connection) throws SQLException, SqlExecutionException, ResultParserException {
+        System.out.println("\n=== Call Stored Procedure With Input/Output Parameters Using CallableSql ===");
 
-        String storedProcCall = "CALL NOW()";
+        // Create CallableSql using builder pattern
+        CallableSql callableSql = new CallableSqlBuilder("{ ? = CALL UPDATE_STRING(?) }")
+                .appendOutParameter(Types.VARCHAR) // Return parameter is OUT parameter
+                .appendInParameter("initial_value", Types.VARCHAR) // Input parameter
+                .build();
 
         try (CallableIntegrateStatement stmt = new CallableIntegrateStatement(connection)) {
-            Boolean hasResultSet = stmt.createStatement(storedProcCall)
-                .execute((Executor<CallableStatement, Boolean>) (callableStatement, params) -> {
-                    // Execute stored procedure and return if there is result set
-                    try {
-                        return callableStatement.execute();
-                    } catch (SQLException e) {
-                        throw new SqlExecutionException(e);
-                    }
-                });
+            String result = stmt.execute(callableSql, (callableStatement, executeResult) -> {
+                try {
+                    // Get return value
+                    return callableStatement.getString(1);
+                } catch (SQLException e) {
+                    throw new ResultParserException(e);
+                }
+            });
 
-            System.out.println("Execution completed, has result set: " + hasResultSet);
+            System.out.println("Result: " + result);
         }
     }
 }

@@ -1,5 +1,8 @@
 package io.github.maxwellnie.free.jdbc.statement;
 
+import io.github.maxwellnie.free.jdbc.batch.BatchSql;
+import io.github.maxwellnie.free.jdbc.single.SingleSql;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -39,5 +42,50 @@ public class PreparedIntegratedStatement extends BaseIntegratedStatement<Prepare
                     ", Expected: successful execution, Actual: SQLException during execution", e);
         }
     }
-
+    /**
+     * Execute a single SQL statement.
+     *
+     * @param singleSql SQL statement to execute
+     * @return number of rows affected
+     * @throws SqlExecutionException if an error occurs during execution
+     */
+    public int executeUpdate(SingleSql singleSql) throws SqlExecutionException {
+        if (singleSql == null)
+            throw new SqlExecutionException("Single SQL cannot be null");
+        if (statement ==  null)
+            createStatement(singleSql.getSqlString());
+        parameterize(SingleSql.PREPARED_STATEMENT_SINGLE_SQL_PARAMETERS_HANDLER, singleSql);
+        return execute(Executor.PREPARED_STATEMENT_UPDATE_EXECUTOR);
+    }
+    /**
+     * Execute a single SQL statement.
+     *
+     * @param singleSql SQL statement to execute
+     * @return result set
+     * @throws SqlExecutionException if an error occurs during execution
+     * @throws ResultParserException if an error occurs during result parsing
+     */
+    public <R> R executeQuery(SingleSql singleSql, ResultParser<PreparedStatement, Boolean, R> resultParser) throws SqlExecutionException, ResultParserException {
+        if (singleSql == null)
+            throw new SqlExecutionException("Single SQL cannot be null");
+        if (statement ==  null)
+            createStatement(singleSql.getSqlString());
+        parameterize(SingleSql.PREPARED_STATEMENT_SINGLE_SQL_PARAMETERS_HANDLER, singleSql);
+        return execute(Executor.PREPARED_STATEMENT_EXECUTE_EXECUTOR, resultParser);
+    }
+    /**
+     * Execute a batch SQL statement.
+     *
+     * @param batchSql SQL statement to execute
+     * @return number of rows affected
+     * @throws SqlExecutionException if an error occurs during execution
+     */
+    public int[] executeBatch(BatchSql batchSql) throws SqlExecutionException {
+        if (batchSql == null)
+            throw new SqlExecutionException("Batch SQL cannot be null");
+        if (statement ==  null)
+            createStatement(batchSql.getSqlString());
+        parameterize(BatchSql.BATCH_SQL_PARAMETERS_HANDLER, batchSql);
+        return execute(Executor.PREPARED_STATEMENT_BATCH_EXECUTOR);
+    }
 }

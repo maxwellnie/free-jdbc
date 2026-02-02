@@ -1,5 +1,7 @@
 package io.github.maxwellnie.free.jdbc.statement;
 
+import io.github.maxwellnie.free.jdbc.callable.CallableSql;
+
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -42,4 +44,23 @@ public class CallableIntegrateStatement extends BaseIntegratedStatement<Callable
                     ", Expected: successful execution, Actual: SQLException during execution", e);
         }
     }
+
+    /**
+     * 执行CallableSql
+     * @param callableSql CallableSql实例
+     * @param resultParser 结果解析器
+     * @param <R> 返回类型
+     * @return 执行结果
+     * @throws SqlExecutionException SQL执行异常
+     * @throws ResultParserException 结果解析异常
+     */
+    public <R> R execute(CallableSql callableSql, ResultParser<CallableStatement, Boolean, R> resultParser) throws SqlExecutionException, ResultParserException {
+        if (callableSql == null)
+            throw new SqlExecutionException("CallableSql cannot be null");
+        if (statement == null)
+            createStatement(callableSql.getSqlString());
+        parameterize(CallableSql.CALLABLE_SQL_PARAMETERS_HANDLER, callableSql);
+        return execute(Executor.PREPARED_STATEMENT_EXECUTE_EXECUTOR, resultParser);
+    }
+
 }

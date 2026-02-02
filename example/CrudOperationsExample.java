@@ -1,7 +1,6 @@
 
 
 import io.github.maxwellnie.free.jdbc.single.BoundSingleSqlBuilder;
-import io.github.maxwellnie.free.jdbc.single.SingleSqlBuilder;
 import io.github.maxwellnie.free.jdbc.statement.*;
 import io.github.maxwellnie.free.jdbc.statement.SimpleIntegratedStatement;
 import io.github.maxwellnie.free.jdbc.single.SingleSql;
@@ -22,7 +21,10 @@ public class CrudOperationsExample {
             
             // Example 1: Create table
             createTable(connection);
-            
+
+            // Example 2: Bad Insert data
+            // badInsertData(connection);
+
             // Example 2: Insert data
             insertData(connection);
             
@@ -31,10 +33,10 @@ public class CrudOperationsExample {
             
             // Example 4: Update data
             updateData(connection);
-            
+            selectData(connection);
             // Example 5: Delete data
             deleteData(connection);
-            
+            selectData(connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -77,28 +79,70 @@ public class CrudOperationsExample {
                 .build();
         
         try (PreparedIntegratedStatement stmt = new PreparedIntegratedStatement(connection)) {
-            int result = stmt.createStatement(singleSql.getSqlString())
-                    .parameterize(SingleSql.SINGLE_SQL_PARAMETERS_HANDLER, singleSql)
+            int result = stmt.executeUpdate(singleSql);
+            /*int result = stmt.createStatement(singleSql.getSqlString())
+                    .parameterize(SingleSql.PREPARED_STATEMENT_SINGLE_SQL_PARAMETERS_HANDLER, singleSql)
                     .execute(Executor.PREPARED_STATEMENT_UPDATE_EXECUTOR);
+                    */
             
             System.out.println("Data inserted successfully: " + (result >0));
         }
     }
+    /**
+     * Bad Insert Data Example
+     */
+    public static void badInsertData(Connection connection) throws SQLException {
+        System.out.println("\n=== Bad Insert Data Example ===");
 
+        SingleSql singleSql = new BoundSingleSqlBuilder(3)
+                .appendSql("INSERT INTO users(id, name, email) VALUES(")
+                .appendSqlParameter(1)
+                .appendSql("?, ")
+                .appendSqlParameter("Zhang San")
+                .appendSql("?, ")
+                .appendSqlParameter("zhangsan@example.com")
+                .appendSql("?)")
+                .appendSqlParameter("It's superfluous parameter.")
+                .build();
+
+        try (PreparedIntegratedStatement stmt = new PreparedIntegratedStatement(connection)) {
+            int result = stmt.executeUpdate(singleSql);
+            /*int result = stmt.createStatement(singleSql.getSqlString())
+                    .parameterize(SingleSql.PREPARED_STATEMENT_SINGLE_SQL_PARAMETERS_HANDLER, singleSql)
+                    .execute(Executor.PREPARED_STATEMENT_UPDATE_EXECUTOR);
+                    */
+
+            System.out.println("Data inserted successfully: " + (result >0));
+        }
+    }
     /**
      * Query Data Example
      */
     public static void selectData(Connection connection) throws SQLException {
         System.out.println("\n=== Query Data Example ===");
         
-        SingleSql singleSql = new BoundSingleSqlBuilder(1)
-                .appendSql("SELECT id, name, email FROM users WHERE id = ?")
-                .appendSqlParameter(1)
+        SingleSql singleSql = new BoundSingleSqlBuilder()
+                .appendSql("SELECT id, name, email FROM users")
                 .build();
         
         try (PreparedIntegratedStatement stmt = new PreparedIntegratedStatement(connection)) {
-            stmt.createStatement(singleSql.getSqlString())
-                    .parameterize(SingleSql.SINGLE_SQL_PARAMETERS_HANDLER, singleSql)
+            stmt.executeQuery(singleSql, (ResultParser<PreparedStatement, Boolean, Void>) (preparedStmt, hasResultSet) -> {
+                if (!hasResultSet)
+                    throw new ResultParserException("Cannot parse result for query operation, Expected: query operation that returns result set, Actual: update operation with no result set");
+                try (ResultSet rs = preparedStmt.getResultSet()) {
+                    while (rs.next()) {
+                        int id = rs.getInt("id");
+                        String name = rs.getString("name");
+                        String email = rs.getString("email");
+                        System.out.printf("ID: %d, Name: %s, Email: %s%n", id, name, email);
+                    }
+                }catch (SQLException e){
+                    throw new ResultParserException();
+                }
+                return null;
+            });
+            /*stmt.createStatement(singleSql.getSqlString())
+                    .parameterize(SingleSql.PREPARED_STATEMENT_SINGLE_SQL_PARAMETERS_HANDLER, singleSql)
                     .execute((ResultParser<PreparedStatement, SingleSql, Object>) (preparedStmt, sql) -> {
                         try (ResultSet rs = preparedStmt.executeQuery()) {
                             while (rs.next()) {
@@ -111,7 +155,7 @@ public class CrudOperationsExample {
                             throw new ResultParserException();
                         }
                         return null;
-                    });
+                    });*/
         } catch (ResultParserException e) {
             throw new SQLException(e);
         }
@@ -131,9 +175,10 @@ public class CrudOperationsExample {
                 .build();
         
         try (PreparedIntegratedStatement stmt = new PreparedIntegratedStatement(connection)) {
-            int affectedRows = stmt.createStatement(singleSql.getSqlString())
-                    .parameterize(SingleSql.SINGLE_SQL_PARAMETERS_HANDLER, singleSql)
-                    .execute(Executor.PREPARED_STATEMENT_UPDATE_EXECUTOR);
+            int affectedRows = stmt.executeUpdate(singleSql);
+            /*int affectedRows = stmt.createStatement(singleSql.getSqlString())
+                    .parameterize(SingleSql.PREPARED_STATEMENT_SINGLE_SQL_PARAMETERS_HANDLER, singleSql)
+                    .execute(Executor.PREPARED_STATEMENT_UPDATE_EXECUTOR);*/
             
             System.out.println("Updated rows count: " + affectedRows);
         }
@@ -151,9 +196,10 @@ public class CrudOperationsExample {
                 .build();
         
         try (PreparedIntegratedStatement stmt = new PreparedIntegratedStatement(connection)) {
-            int affectedRows = stmt.createStatement(singleSql.getSqlString())
-                    .parameterize(SingleSql.SINGLE_SQL_PARAMETERS_HANDLER, singleSql)
-                    .execute(Executor.PREPARED_STATEMENT_UPDATE_EXECUTOR);
+            int affectedRows = stmt.executeUpdate(singleSql);
+            /*int affectedRows = stmt.createStatement(singleSql.getSqlString())
+                    .parameterize(SingleSql.PREPARED_STATEMENT_SINGLE_SQL_PARAMETERS_HANDLER, singleSql)
+                    .execute(Executor.PREPARED_STATEMENT_UPDATE_EXECUTOR);*/
             
             System.out.println("Deleted rows count: " + affectedRows);
         }

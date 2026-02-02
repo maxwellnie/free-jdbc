@@ -29,9 +29,10 @@ public class BatchOperationExample {
             CrudOperationsExample.createTable(connection);
             // Example 1: Batch insert data
             batchInsertExample(connection);
-            
+            CrudOperationsExample.selectData(connection);
             // Example 2: Batch update data
             batchUpdateExample(connection);
+            CrudOperationsExample.selectData(connection);
             
         } catch (SQLException e) {
             e.printStackTrace();
@@ -60,9 +61,10 @@ public class BatchOperationExample {
                     .setFetchSize(100));
 
             // Execute batch operation
-            int[] results = stmt.createStatement(batchSql.getSqlString())
+            int[] results = stmt.executeBatch(batchSql);
+            /*int[] results = stmt.createStatement(batchSql.getSqlString())
                     .parameterize(batchSql.BATCH_SQL_PARAMETERS_HANDLER, batchSql)
-                    .execute(Executor.PREPARED_STATEMENT_BATCH_EXECUTOR);
+                    .execute(Executor.PREPARED_STATEMENT_BATCH_EXECUTOR);*/
 
             System.out.println("Batch insert result: " + Arrays.toString(results));
         }
@@ -83,9 +85,10 @@ public class BatchOperationExample {
 
         // Execute batch update
         try (PreparedIntegratedStatement stmt = new PreparedIntegratedStatement(connection)) {
-            int[] results = stmt.createStatement(batchSql.getSqlString())
+            int[] results = stmt.executeBatch(batchSql);
+            /*int[] results = stmt.createStatement(batchSql.getSqlString())
                     .parameterize(batchSql.BATCH_SQL_PARAMETERS_HANDLER, batchSql)
-                    .execute(Executor.PREPARED_STATEMENT_BATCH_EXECUTOR);
+                    .execute(Executor.PREPARED_STATEMENT_BATCH_EXECUTOR);*/
 
             System.out.println("Batch update result: " + Arrays.toString(results));
         }
